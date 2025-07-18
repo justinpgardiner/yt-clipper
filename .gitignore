@@ -5,5 +5,4 @@ client_secrets.json
 token.pickle
 *.db
 *.log
-*.mp4
 /frames

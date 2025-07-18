@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
+{% block content %}
+<div class="content-container">
+    <video autoplay muted loop playsinline>
+      <source src="{% static 'videos/right.mp4' %}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="title-container">
+        <h1>Clip me if you can!</h1>
+        <h3>Don't just consume –– create</h3>
+        <button>GO</button>
+    </div>
+    <video autoplay muted loop playsinline>
+      <source src="{% static 'videos/right.mp4' %}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+</div>
+{% endblock %}
