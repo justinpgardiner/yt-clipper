@@ -108,6 +108,7 @@ def clip_video(url):
 
         # Get Gemini opinion on how to clip
         # Want to get a video title, description, and hashtags
+        print("Gemini...")
         logging.info("Prompting Gemini for clips for " + id)
         video_file = id + ".mp4"
         subtitle_file = id + ".en.vtt"
@@ -122,8 +123,8 @@ def clip_video(url):
                     "Based on these subtitles: " + subs + ", output between 5 and 20 raw json formatted objects with other no explanation OR MARKDOWN (don't do json```) representing the most cohesive clips from this video with length from 30 seconds up to 90 seconds, only separated by ';', with the following properties: title, description, hashtags, start_time, duration. Start time and duration in format 'XX:XX:XX.XXX' Use this as an example for formatting, don't change the formatting at all."
                 )
                 clip_data = [json.loads(clip) for clip in response.text.split(";")]
-            except Exception:
-                logging.error("Gemini failed, cooling down...")
+            except Exception as e:
+                logging.error("Gemini failed, cooling down..." + e['message'])
                 time.sleep(10)
                 return
         subs_list = {content[:12] : content for content in subs.split('\n\n')}
@@ -149,6 +150,7 @@ def clip_video(url):
             ).run()
             files_to_clean.append(clip_id + ".mp4")
             files_to_clean.append(clip_id + ".en.ass")
+            add_asmr(clip_id)
             logging.info('Uploading clip "' + clip['title'])
             upload_video(
                 file_path= clip_id + ".mp4",
@@ -164,8 +166,8 @@ def clip_video(url):
     except Exception as e:
         logging.warning("Some error occured: " + e['message'])
     finally:
-        # for file in files_to_clean:
-        #     os.remove(file)
+        for file in files_to_clean:
+            os.remove(file)
         return limit
 
 
@@ -202,8 +204,8 @@ def ms_to_time(ms):
 if __name__ == '__main__':
     queue = SQLiteQueue('vid_links.db')
     size = queue.size()
-    limit = False
-    while not limit and queue.peek() is not None:
-        limit = clip_video(queue.peek())
-        logging.info("Uploaded all clips from " + queue.peek() + ", dequeuing")
-        queue.dequeue()
+    # limit = False
+    # while not limit and queue.peek() is not None:
+    clip_video(queue.peek())
+    # logging.info("Uploaded all clips from " + queue.peek() + ", dequeuing")
+    queue.dequeue()

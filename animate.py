@@ -14,10 +14,10 @@ def hat(vector):
     return tuple(i / magv for i in vector)
 
 class Arc:
-    def __init__(self, screen_width, screen_height, radius, color="black", rate=1, gap=30, width=5):
+    def __init__(self, x, y, radius, color="black", rate=1, gap=30, width=5):
         self.radius = radius
-        self.x = screen_width // 2 - self.radius
-        self.y = 5 * screen_height // 8 - self.radius
+        self.x = x
+        self.y = y
         self.color = color
         self.rate = rate
         self.gap = gap
@@ -84,7 +84,7 @@ class Ball:
         self.y += self.vy
 
     def draw(self, draw):
-        draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=self.color)
+        draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=self.color, outline='white', width=2)
     
 
 class MainBall(Ball):
@@ -135,14 +135,34 @@ class Particle(Ball):
         self.vy = vy
 
             
-def add_asmr(frames, clip_name):
+def add_asmr(clip_name):
+    os.makedirs('frames', exist_ok=True)
+    (
+        ffmpeg
+        .input(clip_name + ".mp4")
+        .filter('fps', fps=30)
+        .output(os.path.join('frames', 'frame_%05d.png'))
+        .run(overwrite_output=True)
+    )
+    (
+        ffmpeg
+        .input(clip_name + ".mp4")
+        .output(clip_name + ".mp3", vn=None, acodec='libmp3lame', audio_bitrate='192k')
+        .run(overwrite_output=True)
+    )
+    frames = sorted(
+        ['frames' + '/' + f for f in os.listdir("frames") if f.endswith('.png')]
+    )
     colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
     objects = []
     for i in range(11):
-        objects.append(Arc(width, height, 100 + i * 10, color=colors[i % len(colors)], rate=i % 3 + 1))
+        radius =  100 + i * 10
+        x = width // 2 - radius
+        y = 3 * height // 4 - radius
+        objects.append(Arc(x, y, radius, color=colors[i % len(colors)], rate=i % 3 + 1))
     radius = 10
     x = width // 2 - radius
-    y = 5 * height // 8 - radius
+    y = 3 * height // 4 - radius
     main_ball = MainBall(x, y, radius)
 
     for i, path in tqdm(enumerate(frames), desc="Generating frames"):
@@ -158,27 +178,20 @@ def add_asmr(frames, clip_name):
         frame.save(path)
 
     ffmpeg.input('frames/frame_%05d.png', framerate=30).output(
-        clip_name + '.mp4',
+        clip_name + 'temp.mp4',
         vcodec='libx264',
         pix_fmt='yuv420p'
     ).run()
-    # for root, dirs, files in os.walk("frames"):
-    #     for filename in files:
-    #         file_path = os.path.join(root, filename)
-    #         os.remove(file_path)
-    # os.rmdir("frames")
 
-os.makedirs('frames', exist_ok=True)
-(
-    ffmpeg
-    .input("p0Nag5w42ys0.mp4")
-    .filter('fps', fps=30)
-    .output(os.path.join('frames', 'frame_%05d.png'))
-    .run(overwrite_output=True)
-)
-frames = sorted(
-    ['frames' + '/' + f for f in os.listdir("frames") if f.endswith('.png')]
-)
-print(frames)
-add_asmr(frames, "p0Nag5w42ys0.mp4")
+    video = ffmpeg.input(clip_name + 'temp.mp4')
+    audio = ffmpeg.input(clip_name + '.mp3')
+
+    ffmpeg.output(video.video, audio.audio, clip_name + 'asmr.mp4', vcodec='copy', acodec='aac', audio_bitrate='192k', shortest=None).run(overwrite_output=True)
+    for root, dirs, files in os.walk("frames"):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            os.remove(file_path)
+    os.rmdir("frames")
+    os.remove(clip_name + 'temp.mp4')
+    os.remove(clip_name + '.mp3')
 
