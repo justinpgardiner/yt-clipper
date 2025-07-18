@@ -48,55 +48,83 @@ class Arc:
             self.gap_points.append(point) 
         # print(self.gap_points)
         
-    def update(self, draw, t):
+    def update(self):
         if self.destroy:
             if self.particles == []:
                 for point in self.points:
                     self.particles.append(Particle(point[0], point[1], 2, color=self.color, vx=-10*point[2][0], vy=-10*point[2][1]))
-            else:
-                for particle in self.particles:
-                    particle.update(draw)
+                self.points = []
+                self.gap_points = []
         else:   
-            draw.arc(xy=(self.x, self.y, self.x + 2 * self.radius, self.y + 2 * self.radius), start=int(-self.rate*t), end=int(-self.rate*t+(360-self.gap)), fill=self.color, width=self.width)
             for i in range(self.rate):
                 self.points.insert(0, self.gap_points.pop())
                 self.gap_points.insert(0, self.points.pop())
+    
+    def draw(self, draw, t):
+        if self.destroy:
+            for particle in self.particles:
+                particle.update()
+                particle.draw(draw)
+        else:
+            draw.arc(xy=(self.x, self.y, self.x + 2 * self.radius, self.y + 2 * self.radius), start=int(-self.rate*t), end=int(-self.rate*t+(360-self.gap)), fill=self.color, width=self.width)
+            
 
 class Ball:
     def __init__(self, x, y, radius, color="black"):
         self.radius = radius
         self.x = x
         self.y = y
-        self.centerx = self.x
-        self.centery = self.y
-        self.vx = 0
-        self.vy = 0
+        self.vx = 3
+        self.vy = -5
         self.color = color
 
-    def update(self, draw):
-        draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=self.color)
+    def update(self):
         self.vy += 1
         self.x += self.vx
         self.y += self.vy
-        self.centerx = self.x + self.radius
-        self.centery = self.y + self.radius
+
+    def draw(self, draw):
+        draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=self.color)
     
 
 class MainBall(Ball):
+    def update(self, objects):
+        super().update()
+        for object in objects:
+            if (self.check_collision(object)):
+                break
+
     def check_collision(self, arc):
+        start = (self.x - self.vx, self.y - self.vy)
+        interval = int(mag((self.vx, self.vy)) / self.radius) + 1
         for point in arc.gap_points:
-            diff_vector = (self.centerx-point[0], self.centery-point[1])
-            distance = mag(diff_vector)
-            if distance <= self.radius:
+            collision, point_of_collision = self.ccd(start, interval, point)
+            if collision:
                 arc.destroy = True
+                return False
         for point in arc.points:
-            diff_vector = (self.centerx-point[0], self.centery-point[1])
-            distance = mag(diff_vector)
-            if distance <= self.radius:
+            collision, point_of_collision = self.ccd(start, interval, point)
+            if collision:
                 unit = point[2]
                 magv = mag((self.vx, self.vy))
                 self.vx = magv * unit[0] 
                 self.vy = magv * unit[1]
+                self.x = int(point_of_collision[0] + 1 * self.radius * unit[0])
+                self.y = int(point_of_collision[1] + 1 * self.radius * unit[1])
+                return True
+        return False
+    
+    def ccd(self, start, interval, point):
+        cx = start[0]
+        cy = start[1]
+        for t in range(interval):
+            cx = start[0] + int(t/interval * self.vx)
+            cy = start[1] + int(t/interval * self.vy)
+            diff_vector = (cx-point[0], cy-point[1])
+            distance = mag(diff_vector)
+            if distance <= self.radius:
+                return True, (cx, cy)
+        return False, (-1, -1)
 
 
 
@@ -109,10 +137,11 @@ class Particle(Ball):
             
 os.makedirs("frames", exist_ok=True)
 
-num_frames = 300
-arc1 = Arc(width, height, 100, color="yellow", rate=2)
-arc2 = Arc(width, height, 110, color="blue", rate=2)
-arc3 = Arc(width, height, 120, color="red", rate=2)
+num_frames = 15 * 30
+colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+objects = []
+for i in range(11):
+    objects.append(Arc(width, height, 100 + i * 10, color=colors[i % len(colors)], rate=i % 3 + 1))
 radius = 10
 x = width // 2 - radius
 y = 5 * height // 8 - radius
@@ -122,13 +151,13 @@ for i in tqdm(range(num_frames), desc="Generating frames"):
     frame = Image.new("RGB", (width, height), color="white")
     draw = ImageDraw.Draw(frame)
     
-    arc1.update(draw, i)
-    arc2.update(draw, i)
-    arc3.update(draw, i)
-    main_ball.update(draw)
-    main_ball.check_intersect(arc1)
-    main_ball.check_intersect(arc2)
-    main_ball.check_intersect(arc3)
+    for object in objects:
+        object.update()
+    main_ball.update(objects)
+    for object in objects:
+        object.draw(draw, i)
+    main_ball.draw(draw)
+
 
     frame.save(f"frames/frame{i:03}.png")
 
