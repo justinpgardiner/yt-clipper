@@ -15,6 +15,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from googleapiclient.errors import ResumableUploadError
+from animate import add_asmr
 
 
 logging.basicConfig(
@@ -77,6 +78,7 @@ def upload_video(file_path, title, description, category_id="22", privacy_status
             print(f"Uploaded {int(status.progress() * 100)}%")
 
     print("Upload complete. Video ID:", response["id"])
+    
 
 def clip_video(url):
     files_to_clean = []
@@ -162,8 +164,8 @@ def clip_video(url):
     except Exception as e:
         logging.warning("Some error occured: " + e['message'])
     finally:
-        for file in files_to_clean:
-            os.remove(file)
+        # for file in files_to_clean:
+        #     os.remove(file)
         return limit
 
 

@@ -3,7 +3,7 @@ __pycache__/
 .env
 client_secrets.json
 token.pickle
-vid_links.db
-app.log
+*.db
+*.log
 *.mp4
 /frames

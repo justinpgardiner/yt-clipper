@@ -135,42 +135,50 @@ class Particle(Ball):
         self.vy = vy
 
             
-os.makedirs("frames", exist_ok=True)
+def add_asmr(frames, clip_name):
+    colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+    objects = []
+    for i in range(11):
+        objects.append(Arc(width, height, 100 + i * 10, color=colors[i % len(colors)], rate=i % 3 + 1))
+    radius = 10
+    x = width // 2 - radius
+    y = 5 * height // 8 - radius
+    main_ball = MainBall(x, y, radius)
 
-num_frames = 15 * 30
-colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
-objects = []
-for i in range(11):
-    objects.append(Arc(width, height, 100 + i * 10, color=colors[i % len(colors)], rate=i % 3 + 1))
-radius = 10
-x = width // 2 - radius
-y = 5 * height // 8 - radius
-main_ball = MainBall(x, y, radius)
+    for i, path in tqdm(enumerate(frames), desc="Generating frames"):
+        frame = Image.open(path).convert("RGBA")
+        draw = ImageDraw.Draw(frame)
+        
+        for object in objects:
+            object.update()
+        main_ball.update(objects)
+        for object in objects:
+            object.draw(draw, i)
+        main_ball.draw(draw)
+        frame.save(path)
 
-for i in tqdm(range(num_frames), desc="Generating frames"):
-    frame = Image.new("RGB", (width, height), color="white")
-    draw = ImageDraw.Draw(frame)
-    
-    for object in objects:
-        object.update()
-    main_ball.update(objects)
-    for object in objects:
-        object.draw(draw, i)
-    main_ball.draw(draw)
+    ffmpeg.input('frames/frame_%05d.png', framerate=30).output(
+        clip_name + '.mp4',
+        vcodec='libx264',
+        pix_fmt='yuv420p'
+    ).run()
+    # for root, dirs, files in os.walk("frames"):
+    #     for filename in files:
+    #         file_path = os.path.join(root, filename)
+    #         os.remove(file_path)
+    # os.rmdir("frames")
 
-
-    frame.save(f"frames/frame{i:03}.png")
-
-ffmpeg.input('frames/frame%03d.png', framerate=30).output(
-    'circle_animation.mp4',
-    vcodec='libx264',
-    pix_fmt='yuv420p'
-).run()
-
-for root, dirs, files in os.walk("frames"):
-    for filename in files:
-        file_path = os.path.join(root, filename)
-        os.remove(file_path)
-
-os.rmdir("frames")
+os.makedirs('frames', exist_ok=True)
+(
+    ffmpeg
+    .input("p0Nag5w42ys0.mp4")
+    .filter('fps', fps=30)
+    .output(os.path.join('frames', 'frame_%05d.png'))
+    .run(overwrite_output=True)
+)
+frames = sorted(
+    ['frames' + '/' + f for f in os.listdir("frames") if f.endswith('.png')]
+)
+print(frames)
+add_asmr(frames, "p0Nag5w42ys0.mp4")
 
