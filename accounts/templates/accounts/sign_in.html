@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}">{% endblock %}
+{% block content %}
+<script src="https://accounts.google.com/gsi/client" async></script>
+<div class="container">
+    <div class="scroll-container">
+        <div class="scroll-row">
+            <div class="scroll-text scroll-left medium">#FYP #SHORTS #REELS #VIRAL #FYP #SHORTS #REELS #VIRAL</div>
+        </div>
+        <div class="scroll-row">
+            <div class="scroll-text scroll-right small slow">#CREATE #BUILD #AUTOMATE #CREATE #BUILD #AUTOMATE</div>
+        </div>
+        <div class="scroll-row">
+            <div class="scroll-text scroll-left large fast">#FYP #SHORTS #REELS #VIRAL #FYP #SHORTS #REELS #VIRAL</div>
+        </div>
+    </div>
+    <div class="sign-in-container">
+        {% if request.session.user_data %}
+        <div>
+            <p>Hi {{ request.session.user_data.given_name }}</p>
+            <p>Your email is {{ request.session.user_data.email }}</p>
+            <img src="{{ request.session.user_data.picture }}" alt="User picture" />
+            <p>Click here to <a href="/accounts/logout">Sign out</a></p>
+        </div>
+        {% else %}
+        <div>
+            <p>Welcome to yt-clipper</p>
+            <p>Click below to sign in with Google</p>
+            <div id="g_id_onload"
+                data-client_id="974995020888-chg048hhlu67lpt7aroj4n2oi9v56i9u.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-login_uri="http://localhost:8000/accounts/auth-receiver/"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="pill"
+                data-theme="outline"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

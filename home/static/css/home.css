@@ -8,6 +8,11 @@
   gap: 40px              
 }
 
+br {
+    color: #ff0000;
+    width: 5px; 
+}
+
 video {
   width: 300px; /* Scale down to 150px wide */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);

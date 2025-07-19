@@ -1,0 +1,108 @@
+.container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    min-width: 100%;
+}
+
+.sign-in-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    justify-content: center;
+    margin-top: 15%;
+    margin-bottom: 15%;
+}
+
+.sign-in-container img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+.sign-in-container p {
+    color: #ff0000;
+    margin: 10px 0;
+}
+
+.sign-in-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sign-in-container a:hover {
+    text-decoration: underline;
+}
+
+.sign-in-container .g_id_signin {
+    margin-top: 20px;
+}
+
+.scroll-container {
+    position: absolute;
+    margin-top: 30%;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.scroll-row {
+    position: relative;
+    white-space: nowrap;
+    font-size: 48px;
+    font-weight: bold;
+    color: rgba(255, 0, 0, 0.1);
+    line-height: 1.2;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.scroll-text {
+    display: inline-block;
+    padding-right: 100px;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.scroll-left {
+    animation-name: scrollLeft;
+    animation-duration: 30s;
+}
+
+.scroll-right {
+    animation-name: scrollRight;
+    animation-duration: 25s;
+}
+
+.slow {
+    animation-duration: 40s !important;
+}
+
+.fast {
+    animation-duration: 20s !important;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes scrollRight {
+    0% {
+        transform: translateX(100vw);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}

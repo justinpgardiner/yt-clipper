@@ -10,11 +10,14 @@
     <div class="title-container">
         <h1>Clip me if you can!</h1>
         <h3>Don't just consume –– create</h3>
-        <button>GO</button>
+        <a href="accounts/login">
+            <button>GO</button>
+        </a>
     </div>
     <video autoplay muted loop playsinline>
       <source src="{% static 'videos/right.mp4' %}" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 </div>
+<br>
 {% endblock %}
