@@ -6,6 +6,6 @@ token.pickle
 *.db
 *.log
 *.ass
-/videoediter/*.mp4
+/videoeditor/*.mp4
 /frames
 /node_modules
