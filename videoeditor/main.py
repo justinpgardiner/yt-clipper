@@ -114,7 +114,7 @@ def clip_video(url):
         subtitle_file = id + ".en.vtt"
         files_to_clean.append(video_file)
         files_to_clean.append(subtitle_file)
-        client = genai.Client(api_key='AIzaSyDuwzBx9ciYjfHJ8Iui22QWp59DgHByWms')
+        client = genai.Client(api_key=os.environ.load('API_KEY'))
         with open(subtitle_file) as f:
             subs = f.read()
             try:
