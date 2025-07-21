@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'ytclipper',
-    'accounts'
+    'accounts',
+    'clips',
 ]
 
 MIDDLEWARE = [

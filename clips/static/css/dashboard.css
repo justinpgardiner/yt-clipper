@@ -1,0 +1,31 @@
+.grid {
+    margin-top: 5%;
+    display: grid;
+    height: 85vh;
+    width: 100vw;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.cell {
+    background-color: white;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    font-size: 2rem;
+    font-family: sans-serif;
+}
+
+.cell h1 {
+    color: red;
+    font-style: italic;
+}
+
+.hammer-icon {
+    color: red;
+}
+

@@ -30,17 +30,18 @@ def auth_receiver(request):
 
     email = user_data.get('email')
     name = user_data.get('name')
-
+    first = name.split(' ')[0]
+    last = name.split(' ')[1]
     if not email:
         return HttpResponse("No email in token", status=400)
 
     # Get or create the user
     user, created = User.objects.get_or_create(
         username=email,
-        defaults={'email': email, 'first_name': name}
+        defaults={'email': email, 'first_name': first, 'last_name': last}
     )
     login(request, user)
-    return redirect('sign_in')
+    return redirect('/clips/dashboard/')
 
 @login_required
 def sign_out(request):
