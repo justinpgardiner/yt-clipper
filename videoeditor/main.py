@@ -84,27 +84,27 @@ def clip_video(url):
     files_to_clean = []
     limit = False
     try:
-        # Download video from yt
-        logging.info("Downloading " + url + " from YouTube...")
+        # # Download video from yt
+        # logging.info("Downloading " + url + " from YouTube...")
         id = url[url.index("=") + 1:]
-        test_opts = {
-            'quiet': True,
-            'skip_download': True,
-        }
+        # test_opts = {
+        #     'quiet': True,
+        #     'skip_download': True,
+        # }
 
-        with yt_dlp.YoutubeDL(test_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            if not info.get("subtitles"):
-                return
-        ydl_opts = {
-            'outtmpl': id + '.%(ext)s',
-            'writesubtitles': True,
-            'subtitleslangs': ['en'],
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
-            'merge_output_format': 'mp4',
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+        # with yt_dlp.YoutubeDL(test_opts) as ydl:
+        #     info = ydl.extract_info(url, download=False)
+        #     if not info.get("subtitles"):
+        #         return
+        # ydl_opts = {
+        #     'outtmpl': id + '.%(ext)s',
+        #     'writesubtitles': True,
+        #     'subtitleslangs': ['en'],
+        #     'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+        #     'merge_output_format': 'mp4',
+        # }
+        # with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        #     ydl.download([url])
 
         # Get Gemini opinion on how to clip
         # Want to get a video title, description, and hashtags
@@ -114,7 +114,7 @@ def clip_video(url):
         subtitle_file = id + ".en.vtt"
         files_to_clean.append(video_file)
         files_to_clean.append(subtitle_file)
-        client = genai.Client(api_key=os.environ.load('API_KEY'))
+        client = genai.Client(api_key='NICE_TRY')
         with open(subtitle_file) as f:
             subs = f.read()
             try:
@@ -185,7 +185,7 @@ def format_subtitle_dialogue(start, duration, subs_list):
         temp_start = key
         temp_end = subs_list[key][subs_list[key].index('--> ') + 4: subs_list[key].index('--> ') + 16]
         temp_content = subs_list[key][subs_list[key].index('\n') + 1:]
-        dialogue += f"Dialogue: 0,{ms_to_time(time_to_ms(temp_start))},{ms_to_time(time_to_ms(temp_end))},Default,,0,0,0,,{temp_content}".replace('\n', '\\N') + "\n"
+        dialogue += f"Dialogue: 0,{ms_to_time(time_to_ms(temp_start))},{ms_to_time(time_to_ms(temp_end))},Default,,0,0,0,,{{\\fad(500,500)\\c&H00FFFF&\\fscx100\\fscy100\\t(0,3000,\\fscx110\\fscy110\\c&H00FF00&)}}{temp_content}".replace('\n', '\\N') + "\n"
         index += 1
     return dialogue
 

@@ -127,13 +127,13 @@ class MainBall(Ball):
         return False, (-1, -1)
     
     def draw(self, frame):
-        cv2.circle(frame, (int(self.x), int(self.y)), self.radius + 1, self.color, -1)
+        cv2.circle(frame, (int(self.x), int(self.y)), self.radius + 1, (255, 255, 255), -1)
         super().draw(frame)
 
 
 
 class Particle(Ball):
-    def __init__(self, x, y, radius, color="black", vx=0, vy=0):
+    def __init__(self, x, y, radius, color=(0, 0, 0), vx=0, vy=0):
         super().__init__(x, y, radius, color=color)
         self.vx = vx
         self.vy = vy
@@ -190,7 +190,7 @@ def add_asmr(clip_name):
     video = ffmpeg.input(clip_name + 'temp.mp4')
     audio = ffmpeg.input(clip_name + '.mp3')
 
-    ffmpeg.output(video.video, audio.audio, clip_name + 'asmr.mp4', vcodec='copy', acodec='aac', audio_bitrate='192k', shortest=None, avoid_negative_ts='make_zero',).run(overwrite_output=True)
+    ffmpeg.output(video.video, audio.audio, clip_name + 'asmr.mp4', vcodec='libx264', acodec='aac', audio_bitrate='192k', shortest=None, avoid_negative_ts='make_zero',).run(overwrite_output=True)
     os.remove(clip_name + 'temp.mp4')
     os.remove(clip_name + '.mp3')
 

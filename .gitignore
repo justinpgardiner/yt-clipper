@@ -7,5 +7,6 @@ token.pickle
 *.log
 *.ass
 /videoeditor/*.mp4
+/videoeditor/*.vtt
 /frames
 /node_modules
