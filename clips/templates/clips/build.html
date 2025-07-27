@@ -13,7 +13,7 @@
                     <label for="animation">Add Animation</label>
                     <input type="checkbox" id="animation" name="animation" value="animation">
                     <label for="subtitles">Add Subtitles</label>
-                    <input type="checkbox" id="subtitles" name="animation" value="css">
+                    <input type="checkbox" id="subtitles" name="subtitles" value="css">
                 </div>
                 <button type="submit">Generate Clips</button>
             </div>
@@ -24,7 +24,7 @@
         <div class="video-container">
             {% if clip_url %}
             <video controls loop playsinline>
-                <source src="{% static 'videos/cjG0m9QUF340asmr_fixed.mp4' %}" type="video/mp4">
+                <source src="{% static clip_url %}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             {% else %}
@@ -45,12 +45,29 @@
             animation.innerHTML = `
                 <div>
                     <h1>Animation Settings</h1>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <label for="number_of_rings" class="form-label">Number of Rings:</label>
+                    <input type="number" name="number_of_rings" class="form-control" placeholder="ex. 1" required>
+                    <label for="color_of_rings" class="form-label">Color of Rings:</label>
+                    <select name="color_of_rings" class="form-control" required>
+                        <option value="rainbow">Rainbow</option>
+                        <option value="black">Black</option>
+                        <option value="black">White</option>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                    <label for="color_of_ball" class="form-label">Color of Ball:</label>
+                    <select name="color_of_ball" class="form-control" required>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
                 </div>
             `;
             container.appendChild(animation);
@@ -70,13 +87,20 @@
             subtitles.className = 'subtitles-card';
             subtitles.innerHTML = `
                 <div>
-                    <h1>Animation Settings</h1>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
-                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
-                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <h1>Subtitles Settings</h1>
+                    <label for="color_of_subtitles" class="form-label">Color of Subtitles:</label>
+                    <select name="color_of_subtitles" class="form-control" required>
+                        <option value="black">Black</option>
+                        <option value="black">White</option>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                    <label for="font_size" class="form-label">Font Size:</label>
+                    <input type="number" name="font_size" class="form-control" placeholder="ex. 1" required>
                 </div>
             `;
             container.appendChild(subtitles);

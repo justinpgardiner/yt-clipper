@@ -105,23 +105,23 @@
     font-size: 1.5rem;
 }
 
-.card label,
-.animation-card label {
-    font-weight: 600;
+.subtitles-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 20px;
+    width: 100%;
+    background-color: #ffcbcb;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+}
+
+.subtitles-card h1 {
+    margin: 0 0 15px 0;
     color: #333;
-    margin-bottom: 5px;
+    font-size: 1.5rem;
 }
-
-.card input,
-.animation-card input {
-    padding: 12px;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: white;
-}
-
 
 #url-input {
     min-width: unset;
