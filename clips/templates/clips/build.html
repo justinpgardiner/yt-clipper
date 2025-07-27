@@ -4,27 +4,110 @@
 {% block content %}
 <div class="container">
     <div class="left-section">
-        <a href="#" class="top-link">Navigation Link</a>
-        <div class="dropdown">
-            <select>
-                <option value="">Select an option</option>
-                <option value="option1">Video Settings</option>
-                <option value="option2">Display Mode</option>
-                <option value="option3">Quality</option>
-                <option value="option4">Playback Speed</option>
-                <option value="option5">Audio Settings</option>
-            </select>
-        </div>
+        <form method="POST" action="{% url 'clip_video' %}" id="clip-video-form">
+            {% csrf_token %}
+            <div class="card">
+                <label for="url" class="form-label">Enter YouTube Video URL:</label>
+                <input type="text" id="url-input" name="url" class="form-control" placeholder="ex. https://www.youtube.com/watch?v=video_id_here" required>
+                <div>
+                    <label for="animation">Add Animation</label>
+                    <input type="checkbox" id="animation" name="animation" value="animation">
+                    <label for="subtitles">Add Subtitles</label>
+                    <input type="checkbox" id="subtitles" name="animation" value="css">
+                </div>
+                <button type="submit">Generate Clips</button>
+            </div>
+        </form>
     </div>
 
     <div class="video-section">
         <div class="video-container">
+            {% if clip_url %}
             <video controls loop playsinline>
                 <source src="{% static 'videos/cjG0m9QUF340asmr_fixed.mp4' %}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
+            {% else %}
             Enter video link to begin clipping
+            {% endif %}
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addAnimation = function() {
+            if (document.querySelector('.animation-card')) {
+                return;
+            }
+            const container = document.getElementById('clip-video-form');
+            const animation = document.createElement('div');
+            animation.className = 'animation-card';
+            animation.innerHTML = `
+                <div>
+                    <h1>Animation Settings</h1>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                </div>
+            `;
+            container.appendChild(animation);
+        };
+        const removeAnimation = function() {
+            const animationCard = document.querySelector('.animation-card');
+            if (animationCard) {
+                animationCard.remove(); // Simpler than removeChild
+            }
+        }
+        const addSubtitles = function() {
+            if (document.querySelector('.subtitles-card')) {
+                return;
+            }
+            const container = document.getElementById('clip-video-form');
+            const subtitles = document.createElement('div');
+            subtitles.className = 'subtitles-card';
+            subtitles.innerHTML = `
+                <div>
+                    <h1>Animation Settings</h1>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                    <label for="activity_type_name" class="form-label">Number of Rings:</label>
+                    <input type="number" name="url" class="form-control" placeholder="ex. 1" required>
+                </div>
+            `;
+            container.appendChild(subtitles);
+        };
+        const removeSubtitles = function() {
+            const subtitles = document.querySelector('.subtitles-card');
+            if (subtitles) {
+                subtitles.remove(); // Simpler than removeChild
+            }
+        }
+
+        const animationCheckbox = document.getElementById('animation');
+        if (animationCheckbox) {
+            animationCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    addAnimation();
+                } else {
+                    removeAnimation();
+                }
+            });
+        }
+        const subtitlesCheckbox = document.getElementById('subtitles');
+        if (subtitlesCheckbox) {
+            subtitlesCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    addSubtitles();
+                } else {
+                    removeSubtitles();
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}
